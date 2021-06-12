@@ -16,6 +16,8 @@ import javax.servlet.DispatcherType;
 import java.util.EnumSet;
 
 //mvn clean compile assembly:single
+//alter table users
+//        dd last_login date;
 public class App {
     public static void main(String[] args) throws Exception {
         int PORT = System.getenv("TYPE") != null && System.getenv("TYPE").equals("PROD") ? HerokuEnv.port() : 8080;

@@ -1,5 +1,6 @@
 package Tinder.Users;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 public class User {
@@ -10,6 +11,11 @@ public class User {
     public final String PASSWORD;
     public final String JOB;
     public boolean isLiked = false;
+    public final LocalDate LAST_LOGIN;
+
+    public LocalDate getLAST_LOGIN() {
+        return LAST_LOGIN;
+    }
 
     public String getNAME() {
         return NAME;
@@ -23,13 +29,14 @@ public class User {
         return JOB;
     }
 
-    public User(String id, String name, String avatar_uri, String email, String password, String job) {
+    public User(String id, String name, String avatar_uri, String email, String password, String job, LocalDate lastLogin) {
         ID = id;
         NAME = name;
         AVATAR_URI = avatar_uri;
         EMAIL = email;
         PASSWORD = password;
         JOB = job;
+        this.LAST_LOGIN = lastLogin;
     }
 
     public String getID() {

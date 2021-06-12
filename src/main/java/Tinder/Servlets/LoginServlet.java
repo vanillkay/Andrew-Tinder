@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -71,14 +72,13 @@ public class LoginServlet extends HttpServlet {
                 return;
             }
             Cookie c = new Cookie("UUID", user.get().ID);
+            userService.updateUserLastLogin(user.get().ID, LocalDate.now());
             c.setMaxAge(60 * 60 * 24);
             resp.addCookie(c);
             resp.sendRedirect("/users");
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-
-
     }
 
 }

@@ -9,6 +9,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -86,7 +87,7 @@ public class RegisterServlet extends HttpServlet {
                     name,
                     avatar_uri,
                     email,
-                    BCrypt.hashpw(password, BCrypt.gensalt(12)), job);
+                    BCrypt.hashpw(password, BCrypt.gensalt(12)), job, LocalDate.now());
             userService.addUser(user);
             Cookie c = new Cookie("UUID", user.ID);
             c.setMaxAge(60 * 60 * 24);

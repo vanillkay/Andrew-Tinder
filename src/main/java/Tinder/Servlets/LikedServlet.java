@@ -3,6 +3,8 @@ package Tinder.Servlets;
 import Tinder.Templates.TemplateEngine;
 import Tinder.Users.UserService;
 import Tinder.Utils.CookieHelper;
+import Tinder.Utils.CountDateFromNow;
+import Tinder.Utils.FormatDateTimeMethodModel;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
@@ -22,6 +24,8 @@ public class LikedServlet extends HttpServlet {
         this.userService = userService;
         data.put("title", "Liked page");
         data.put("likedTab", true);
+        data.put("formatDateTime", new FormatDateTimeMethodModel());
+        data.put("daysFromLastLogin", new CountDateFromNow());
     }
 
     @Override

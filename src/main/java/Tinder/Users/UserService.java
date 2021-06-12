@@ -7,8 +7,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.*;
-import java.util.function.Predicate;
 
 public class UserService implements DAO {
 
@@ -24,7 +24,7 @@ public class UserService implements DAO {
                 String name = resultSet.getString("name");
                 String avatar_uri = resultSet.getString("avatar_uri");
                 String job = resultSet.getString("job");
-                users.add(new User(id, name, avatar_uri, "", "", job));
+                users.add(new User(id, name, avatar_uri, "", "", job, LocalDate.now()));
             }
             return users;
         }
@@ -46,15 +46,12 @@ public class UserService implements DAO {
                 String id = resultSet.getString("id");
                 String name = resultSet.getString("name");
                 String avatar_uri = resultSet.getString("avatar_uri");
-                users.add(new User(id, name, avatar_uri, "", "", ""));
+                users.add(new User(id, name, avatar_uri, "", "", "", LocalDate.now()));
             }
             return users.stream().findFirst();
         }
     }
 
-    public Optional<User> getAllWithCondition(Predicate<User> condition) throws SQLException {
-        return getAll().stream().filter(condition).findFirst();
-    }
 
     @Override
     public Optional<User> getUserByID(String UUID) throws SQLException {
@@ -69,7 +66,7 @@ public class UserService implements DAO {
             String name = resultSet.getString("name");
             String avatar_uri = resultSet.getString("avatar_uri");
             String job = resultSet.getString("job");
-            User user = new User(id, name, avatar_uri, "", "", job);
+            User user = new User(id, name, avatar_uri, "", "", job, LocalDate.now());
             return Optional.of(user);
         }
     }
@@ -86,7 +83,7 @@ public class UserService implements DAO {
                     resultSet.getString("name"),
                     resultSet.getString("avatar_uri"),
                     email,
-                    resultSet.getString("password"), "");
+                    resultSet.getString("password"), "", LocalDate.now());
             return Optional.of(user);
         }
     }
@@ -94,7 +91,7 @@ public class UserService implements DAO {
     public List<User> getLikedUsersByID(String UUID) throws SQLException {
         try (Connection connection = DBCPDataSource.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement("" +
-                    "select id, name, avatar_uri, job " +
+                    "select id, name, avatar_uri, job, last_login " +
                     "from users " +
                     "join likes l on users.id = l.\"to\" " +
                     "where l.\"from\" like ? and l.\"like\" = 't'");
@@ -106,7 +103,8 @@ public class UserService implements DAO {
                 String name = resultSet.getString("name");
                 String avatar_uri = resultSet.getString("avatar_uri");
                 String job = resultSet.getString("job");
-                users.add(new User(id, name, avatar_uri, "", "", job));
+                LocalDate lastLogin = resultSet.getObject("last_login", LocalDate.class);
+                users.add(new User(id, name, avatar_uri, "", "", job, lastLogin));
             }
             return users;
         }
@@ -139,10 +137,19 @@ public class UserService implements DAO {
         }
     }
 
+    public void updateUserLastLogin(String UUID, LocalDate login) throws SQLException {
+        try(Connection connection = DBCPDataSource.getConnection()){
+            PreparedStatement preparedStatement = connection.prepareStatement("update users set last_login=? where id=?");
+            preparedStatement.setObject(1, login);
+            preparedStatement.setString(2, UUID);
+            preparedStatement.execute();
+        }
+    }
 
     @Override
     public void updateUser(User user) {
 
 //        users.put(user.ID, user);
     }
+
 }

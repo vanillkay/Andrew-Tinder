@@ -36,7 +36,7 @@
                                         ${user.JOB}
                                     </td>
                                     <td class="align-middle border-top-0">
-                                        Last Login: 6/10/2017<br><small class="text-muted">5 days ago</small>
+                                        Last Login: ${formatDateTime(user.LAST_LOGIN, 'dd/MM/yyyy')}<br><small class="text-muted">${daysFromLastLogin(user.LAST_LOGIN)}</small>
                                     </td>
                                 </tr>
                             <#else>
